@@ -68,13 +68,13 @@ void search(Data *data, int num_rows) { // Search data dari file CSV berdasarkan
     clearInputBuffer(); 
     printf("Enter the column you want to search in: ");
     fgets(column, sizeof(column), stdin);
-    column[strcspn(column, "\n")] = 0;  // Remove the newline character
+    column[strcspn(column, "\n")] = 0;  // Ilangin newline character
 
     printf("Enter the keyword you want to search for: ");
     fgets(keyword, sizeof(keyword), stdin);
-    keyword[strcspn(keyword, "\n")] = 0;  // Remove the newline character
+    keyword[strcspn(keyword, "\n")] = 0;  // Ilangin newline character
 
-    printf("Searching for '%s' in column '%s'\n", keyword, column);  // Moved inside search function
+    printf("Searching for '%s' in column '%s'\n", keyword, column); 
     printf("%-20s %-20s %-10s %-10s %-10s %-10s %-20s %-20s\n", 
                     "Location", "City", "Price", "Rooms", "Bathrooms", "Car Parks", 
                     "Type", "Furnish");
@@ -104,7 +104,7 @@ void search(Data *data, int num_rows) { // Search data dari file CSV berdasarkan
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 
 //////////////////////////////////////////////////////// 2C ////////////////////////////////////////////////////////
-int compare(Data *a, Data *b) {
+int compare(Data *a, Data *b) { // Compare data berdasarkan column dan keyword dari input user
     int result;
     if (strcmp(sortColumn, "Location") == 0 || strcmp(sortColumn, "location") == 0)
         result = strcmp(a->location, b->location);
@@ -131,7 +131,7 @@ int compare(Data *a, Data *b) {
     return result;
 }
 
-void readData(Data *data, FILE *file) {
+void readData(Data *data, FILE *file) { // Read data dari file CSV
     char buffer[1024];
     // read and discard the header line
     fscanf(file, "%[^\n]\n", buffer);
@@ -140,9 +140,9 @@ void readData(Data *data, FILE *file) {
     while (fscanf(file, "%[^,],%[^,],%d,%d,%d,%d,%[^,],%[^\n]\n", 
                   data[i].location, data[i].city, &data[i].price, &data[i].rooms, 
                   &data[i].bathrooms, &data[i].carParks, data[i].type, data[i].furnish) == 8) {
-        // Skip the line if all numerical fields are zero
+        // Skip line kalo semua field numerik 0
         if (data[i].price == 0 && data[i].rooms == 0 && data[i].bathrooms == 0 && data[i].carParks == 0) {
-            fscanf(file, "%[^\n]\n", buffer); // read and discard the next line
+            fscanf(file, "%[^\n]\n", buffer); // read dan buang line
             continue;
         }
         for (int j = 0; data[i].location[j]; j++) {
@@ -156,7 +156,7 @@ void readData(Data *data, FILE *file) {
     printf("Read %d rows\n", i);
 }
 
-void merge(Data* data, int left, int mid, int right) {
+void merge(Data* data, int left, int mid, int right) { // merge sort data
     int i, j, k;
     int n1 = mid - left + 1;
     int n2 = right - mid;
@@ -195,7 +195,7 @@ void merge(Data* data, int left, int mid, int right) {
     }
 }
 
-void mergeSort(Data* data, int left, int right) {
+void mergeSort(Data* data, int left, int right) { // merge sort data
     if (left < right) {
         int mid = left + (right - left) / 2;
 
@@ -206,9 +206,9 @@ void mergeSort(Data* data, int left, int right) {
     }
 }
 
-void printData(Data *data) {
+void printData(Data *data) { // Print data yang sudah di sort
     for (int i = 0; i <= 10; i++) {
-        // Skip the row if all numerical fields are zero
+        // Skip kalo semua field numerik 0
         if (data[i].price == 0 && data[i].rooms == 0 && data[i].bathrooms == 0 && data[i].carParks == 0) {
             continue;
         }
@@ -258,7 +258,6 @@ int main(){
             DataSearch* dataSearch = (DataSearch*)calloc(3940, sizeof(DataSearch));
             int numRowsSearch = 0;
             fgets(line, sizeof(line), CSVfile);
-            // Read the rest of the lines
             while (fgets(line, sizeof(line), CSVfile)) {
                 int fieldsRead = sscanf(line, "%[^,],%[^,],%d,%d,%d,%d,%[^,],%[^\n]",
                         dataSearch[numRowsSearch].location, dataSearch[numRowsSearch].city, &dataSearch[numRowsSearch].price,
@@ -298,9 +297,9 @@ int main(){
             char line[1024];
 
             printf("Enter the output filename: ");
-            scanf("%s", filename);  // Read the filename from the user
+            scanf("%s", filename);  // Read the filename dari input user
 
-            // Append ".csv" to the filename
+            // Ngasih extension .csv ke filename
             strcat(filename, ".csv");
 
             FILE *inputFile = fopen("file.csv", "r");
@@ -315,7 +314,7 @@ int main(){
                 return 1;
             }
 
-            // Read lines from input file and write them to output file
+            // Read lines dari input file dan tulis ke output file
             while (fgets(line, sizeof(line), inputFile)) {
                 fputs(line, outputFile);
             }
